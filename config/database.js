@@ -60,7 +60,7 @@ db.on("connected", () => {
     }
   };
   seedDB().then(() => {
-    mongoose.connection.close();
+    // mongoose.connection.close();
   });
 });
 
