@@ -1,48 +1,31 @@
+
 const mongoose = require("mongoose");
+require("./config/database")
 
-// importing role context
-const Role = require("./model/role");
+const { seedRoleList } = require("./seeds/RoleSeeder");
+const { seedEntityTypeList } = require("./seeds/EntityTypeSeeder");
 
-mongoose.connect("mongodb://localhost:27017/maapay_backend_v1", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-})
-.then(() => {
-    console.log("Mongodb connection open");
-}).catch((err)=>{
-    console.log(err);
-})
-
-const seedRoles = [{
-    name: 'admin',
-    status: 1
-}, {
-    name: 'provider',
-    status: 1
-}, {
-    name: 'organizer',
-    status: 1
-}, {
-    name: 'supervisior',
-    status: 1
-}, {
-    name: 'operator',
-    status: 1
-}, {
-    name: 'farmer',
-    status: 1
-}, {
-    name: 'customer',
-    status: 1
-}];
-
-const seedDB = async () => {
-    await Role.deleteMany({});
-    await Role.insertMany({seedRoles});
-};
-/* console.log("seedRoles");
-console.log(seedRoles);
-*/
-seedDB().then(()=>{
+db.on("connected", () => {
+  console.log("DB Connected seeder running");
+  
+  const seedDatabase = async () => {
+    seedRoleList().then(() => {
+      console.log("Seeding RoleList!");
+    });
+  
+    await seedEntityTypeList().then(() => {
+      console.log("Seeding EntityTypeList!");
+    });
+  };
+  
+  seedDatabase().then(() => {
+    console.log("Database Successfully Seeded!");
     mongoose.connection.close();
-})
+  });
+  
+});
+
+
+db.on("error", (err) => {
+  console.log("Error Connecting Db", err);
+});
